@@ -121,7 +121,7 @@ jobs:
       - name: Set up infra for integration test
         run: |
           sudo apt-get update && sudo apt-get install -y xfsprogs quota linux-modules-extra-`uname -r`
-          go install github.com/onsi/ginkgo/ginkgo@v1.16.4
+          go install -mod=mod github.com/onsi/ginkgo/v2/ginkgo@v2.14.0
           sed -e '/openebs-provisioner-hostpath/{N;s/IfNotPresent/Never/}' deploy/kubectl/openebs-operator-lite.yaml | kubectl apply -f -
 
       - name: Integration test
