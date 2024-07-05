@@ -1,5 +1,7 @@
 v4.1.0 / 2024-07-03
 ===================
+* Add pod priorityClassName to prevent race condition due to pod eviction ([#182](https://github.com/openebs/dynamic-localpv-provisioner/pull/182),[@bernardgut](https://github.com/bernardgut))
+* Allow specifying additional labels to be applied to all helm chart resources ([#183](https://github.com/openebs/dynamic-localpv-provisioner/pull/183),[@laverya](https://github.com/laverya))
 * feat(provisioner): update analytics pkg ([#188](https://github.com/openebs/dynamic-localpv-provisioner/pull/188),[@niladrih](https://github.com/niladrih))
 * build: update base alpine image version to 3.20.1 ([#189](https://github.com/openebs/dynamic-localpv-provisioner/pull/189),[@niladrih](https://github.com/niladrih))
 

@@ -66,7 +66,6 @@ Common labels
 {{ include "localpv.componentLabels" . }}
 {{- end -}}
 
-
 {{/*
 Create the name of the service account to use
 */}}
