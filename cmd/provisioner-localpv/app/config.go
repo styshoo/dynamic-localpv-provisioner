@@ -1,20 +1,3 @@
-/*
-Copyright 2019 The OpenEBS Authors.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-*/
-
 package app
 
 import (
@@ -26,7 +9,7 @@ import (
 	cast "github.com/openebs/maya/pkg/castemplate/v1alpha1"
 	hostpath "github.com/openebs/maya/pkg/hostpath/v1alpha1"
 	"github.com/openebs/maya/pkg/util"
-	errors "github.com/pkg/errors"
+	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
@@ -143,7 +126,7 @@ const (
 )
 
 // GetVolumeConfig creates a new VolumeConfig struct by
-// parsing and merging the configuration provided in the PVC
+// parsing and merging the configuration provided in the PVC/SC
 // annotation - cas.openebs.io/config with the
 // default configuration of the provisioner.
 func (p *Provisioner) GetVolumeConfig(ctx context.Context, pvName string, pvc *corev1.PersistentVolumeClaim) (*VolumeConfig, error) {
@@ -169,16 +152,23 @@ func (p *Provisioner) GetVolumeConfig(ctx context.Context, pvName string, pvc *c
 		}
 	}
 
-	//TODO : extract and merge the cas volume config from pvc
-	//This block can be added once validation checks are added
-	// as to the type of config that can be passed via PVC
-	//pvcCASConfigStr := pvc.ObjectMeta.Annotations[string(mconfig.CASConfigKey)]
-	//if len(strings.TrimSpace(pvcCASConfigStr)) != 0 {
-	//	pvcCASConfig, err := cast.UnMarshallToConfig(pvcCASConfigStr)
-	//	if err == nil {
-	//		pvConfig = cast.MergeConfig(pvcCASConfig, pvConfig)
-	//	}
-	//}
+	// Extract and merge the cas config from persistentvolumeclaim.
+	// TODO: Validation checks for what all cas-config options can be
+	// set on the PVC.
+	pvcCASConfigStr := pvc.Annotations[string(mconfig.CASConfigKey)]
+	klog.V(4).Infof("PVC %v has config:%v", pvc.Name, pvcCASConfigStr)
+	if len(strings.TrimSpace(pvcCASConfigStr)) != 0 {
+		pvcCASConfig, err := cast.UnMarshallToConfig(pvcCASConfigStr)
+		if err == nil {
+			// Config keys which already exist (SC config),
+			// will be skipped
+			// i.e. SC config will have precedence over PVC config,
+			// if both have the same keys
+			pvConfig = cast.MergeConfig(pvConfig, pvcCASConfig)
+		} else {
+			return nil, errors.Wrapf(err, "failed to get config: invalid pvc config {%v}", pvcCASConfigStr)
+		}
+	}
 
 	pvConfigMap, err := cast.ConfigToMap(pvConfig)
 	if err != nil {
