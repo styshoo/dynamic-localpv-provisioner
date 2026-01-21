@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "localpv.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   {{- with .Values.localpv.annotations }}
   annotations: {{ toYaml . | nindent 4 }}
   {{- end }}
@@ -32,6 +33,9 @@ spec:
         {{- with .Values.localpv.podLabels }}
           {{- toYaml . | nindent 8 }}
         {{- end }}
+        {{- with .Values.loggingLabels}}
+          {{ toYaml . | nindent 8 -}}
+        {{- end}}
     spec:
     {{- if .Values.localpv.priorityClassName }}
       priorityClassName: {{ tpl .Values.localpv.priorityClassName . }}

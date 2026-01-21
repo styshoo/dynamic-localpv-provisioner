@@ -18,6 +18,7 @@ pkgs.mkShell {
     which
     curl
     cacert
+    crane
     util-linux
     jq
     nixos-shell
@@ -26,6 +27,7 @@ pkgs.mkShell {
   PRE_COMMIT_ALLOW_NO_CONFIG = 1;
 
   shellHook = ''
+    unset GOROOT
     export GOPATH=$(pwd)/nix/.go
     export GOCACHE=$(pwd)/nix/.go/cache
     export TMPDIR=$(pwd)/nix/.tmp

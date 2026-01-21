@@ -1,3 +1,12 @@
+v4.4.0 / 2025-11-17
+===================
+* Add support for empty PVC selector ([#286](https://github.com/openebs/dynamic-localpv-provisioner/pull/286),[@speedfl](https://github.com/speedfl))
+
+v4.3.0 / 2025-06-02
+===================
+* Add support for configuring file system mode at provision time ([#264](https://github.com/openebs/dynamic-localpv-provisioner/pull/264),[@sushiMix](https://github.com/sushiMix))
+* Add support for adding cas-config on PVC annotation ([#264](https://github.com/openebs/dynamic-localpv-provisioner/pull/264),[@sushiMix](https://github.com/sushiMix))
+
 v4.2.0 / 2025-02-01
 ===================
 * Merge cas-config from PVC ([#190](https://github.com/openebs/dynamic-localpv-provisioner/pull/190),[@nobiit](https://github.com/nobiit))
